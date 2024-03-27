@@ -37,8 +37,6 @@ jobs:
           git checkout ${{github.sha}}
           # git diff ${{github.sha}} origin/${{github.base_ref}}
     outputs:
-      is_dispatch_run: ${{github.event_name == 'workflow_dispatch'}}
-      is_scheduled_run: ${{github.event_name == 'schedule'}}
       previous_val: ${{steps.did_change.outputs.PREVIOUS_VAL}}
       current_val: ${{steps.did_change.outputs.CURRENT_VAL}}
 
@@ -61,8 +59,8 @@ jobs:
 
   do_stuff:
     needs: [check_changed]
-    if: needs.check_changed.outputs.is_dispatch_run == 'true' ||
-      needs.check_changed.outputs.is_scheduled_run == 'true' ||
+    if: github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
       needs.check_changed.outputs.previous_val != needs.check_changed.outputs.current_val
     runs-on: ubuntu-latest
     steps:
