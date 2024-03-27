@@ -1,8 +1,6 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -20,7 +18,7 @@ jobs:
       - id: did_change
         if: steps.changed_files.outputs.any_changed == 'true'
         run: |
-          git diff {{github.base_ref}} {{github.head_ref}}
+          git diff ${{github.head_ref || github.ref_name}} ${{github.sha}}
 
 
   build:
